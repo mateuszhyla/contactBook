@@ -15,8 +15,8 @@ struct Contact
     string name;
     string surname;
     string phoneNumber;
-    string mailAdress;
-    string adress;
+    string mailAddress;
+    string address;
 
 };
 vector <Contact> readDataFromFile();
@@ -39,7 +39,7 @@ int main()
 
     allContacts = readDataFromFile();
 
-    mainWindow:
+mainWindow:
     mainWindowUserSelection=displayMainMenu();
 
     switch (mainWindowUserSelection)
@@ -73,6 +73,7 @@ int main()
         {
             contactId = 1;
         }
+
         allContacts.push_back(addContactToContactsBookWindow(contactId));
         goto mainWindow;
         break;
@@ -91,38 +92,38 @@ int main()
 
 void showConsoleTextInRed(string header)
 {
-HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
-SetConsoleTextAttribute(console, 12);
-cout << header << endl << endl;
-SetConsoleTextAttribute(console, 15);
+    HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
+    SetConsoleTextAttribute(console, 12);
+    cout << header << endl << endl;
+    SetConsoleTextAttribute(console, 15);
 
 }
 
 vector <Contact> readDataFromFile()
 {
-fstream contactBook;
-contactBook.open("contactBook_v2.txt", ios::in);
+    fstream contactBook;
+    contactBook.open("contactBook_v2.txt", ios::in);
 
-vector <Contact> contactsFromFile;
-vector <string> dividedContact;
-Contact contactInfo;
-string contact;
-while (getline(contactBook, contact))
+    vector <Contact> contactsFromFile;
+    vector <string> dividedContact;
+    Contact contactInfo;
+    string contact;
+    while (getline(contactBook, contact))
     {
-    stringstream ss(contact);
-
-    while( ss.good() )
-{
-    string sub;
-    getline( ss, sub, '|' );
-    dividedContact.push_back(sub);
-}
+        stringstream ss(contact);
+        dividedContact.clear();
+        while( ss.good() )
+        {
+            string sub;
+            getline( ss, sub, '|' );
+            dividedContact.push_back(sub);
+        }
         contactInfo.id = atoi(dividedContact[0].c_str());
         contactInfo.name = dividedContact[1];
         contactInfo.surname = dividedContact[2];
         contactInfo.phoneNumber = dividedContact[3];
-        contactInfo.mailAdress = dividedContact[4];
-        contactInfo.adress = dividedContact[5];
+        contactInfo.mailAddress = dividedContact[4];
+        contactInfo.address = dividedContact[5];
 
         contactsFromFile.push_back(contactInfo);
     }
@@ -132,15 +133,15 @@ while (getline(contactBook, contact))
 
 void saveNewContactToContactsBook(Contact newContact)
 {
-fstream contactBook;
-contactBook.open("contactBook_v2.txt", ios::out | ios::app);
+    fstream contactBook;
+    contactBook.open("contactBook_v2.txt", ios::out | ios::app);
 
     contactBook << newContact.id << "|"
                 << newContact.name << "|"
                 << newContact.surname << "|"
                 << newContact.phoneNumber << "|"
-                << newContact.mailAdress << "|"
-                << newContact.adress << "|" << endl;
+                << newContact.mailAddress << "|"
+                << newContact.address << "|" << endl;
 
     contactBook.close();
 }
@@ -153,11 +154,17 @@ Contact addContactToContactsBookWindow(int contactId)
 
     cout << "Fill contact informations:" << endl << endl;
     newContact.id = contactId;
-    cout << "Name: ";          cin >> newContact.name;
-    cout << "Surname: ";       cin >> newContact.surname;
-    cout << "Phone number: ";  cin >> newContact.phoneNumber;
-    cout << "Email adress: ";  cin >> newContact.mailAdress;
-    cout << "Adress: ";        cin.sync(); getline(cin, newContact.adress);
+    cout << "Name: ";
+    cin >> newContact.name;
+    cout << "Surname: ";
+    cin >> newContact.surname;
+    cout << "Phone number: ";
+    cin >> newContact.phoneNumber;
+    cout << "Email address: ";
+    cin >> newContact.mailAddress;
+    cout << "Address: ";
+    cin.sync();
+    getline(cin, newContact.address);
 
     saveNewContactToContactsBook(newContact);
 
@@ -227,7 +234,7 @@ bool searchBySurname(vector <Contact> allContacts)
     system("cls");
     string searchedSurname;
     char userSelection;
-    bool matchesFound=false;
+    bool matchesFound = false;
     cout << "Please type a surname: ";
 
     cin >> searchedSurname;
@@ -268,11 +275,11 @@ char displaySearchMenu()
     cout << "0. Back" << endl << endl;
     cout << "Select a number to start an action..." << endl;
 
-do
-{
-    userSelection = getch();
-}
-while ((userSelection != '1') && (userSelection != '2') && (userSelection != '0'));
+    do
+    {
+        userSelection = getch();
+    }
+    while ((userSelection != '1') && (userSelection != '2') && (userSelection != '0'));
 
     return userSelection;
 }
