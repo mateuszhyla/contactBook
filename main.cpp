@@ -5,6 +5,7 @@
 #include <windows.h>
 #include <conio.h>
 #include <vector>
+#include <sstream>
 
 using namespace std;
 
@@ -36,7 +37,7 @@ int main()
     char mainWindowUserSelection;
     char searchWindowUserSelection;
 
-    allContacts=readDataFromFile();
+    allContacts = readDataFromFile();
 
     mainWindow:
     mainWindowUserSelection=displayMainMenu();
@@ -64,7 +65,14 @@ int main()
         break;
 
     case '2':
-        contactId=allContacts.size();
+        if (allContacts.size()>0)
+        {
+            contactId = allContacts.back().id + 1;
+        }
+        else
+        {
+            contactId = 1;
+        }
         allContacts.push_back(addContactToContactsBookWindow(contactId));
         goto mainWindow;
         break;
@@ -93,19 +101,28 @@ SetConsoleTextAttribute(console, 15);
 vector <Contact> readDataFromFile()
 {
 fstream contactBook;
-contactBook.open("contactBook.txt", ios::in);
+contactBook.open("contactBook_v2.txt", ios::in);
 
 vector <Contact> contactsFromFile;
+vector <string> dividedContact;
 Contact contactInfo;
-string contactId;
-while (getline(contactBook, contactId))
+string contact;
+while (getline(contactBook, contact))
     {
-        contactInfo.id = atoi(contactId.c_str());
-        getline(contactBook, contactInfo.name);
-        getline(contactBook, contactInfo.surname);
-        getline(contactBook, contactInfo.phoneNumber);
-        getline(contactBook, contactInfo.mailAdress);
-        getline(contactBook, contactInfo.adress);
+    stringstream ss(contact);
+
+    while( ss.good() )
+{
+    string sub;
+    getline( ss, sub, '|' );
+    dividedContact.push_back(sub);
+}
+        contactInfo.id = atoi(dividedContact[0].c_str());
+        contactInfo.name = dividedContact[1];
+        contactInfo.surname = dividedContact[2];
+        contactInfo.phoneNumber = dividedContact[3];
+        contactInfo.mailAdress = dividedContact[4];
+        contactInfo.adress = dividedContact[5];
 
         contactsFromFile.push_back(contactInfo);
     }
@@ -116,14 +133,14 @@ while (getline(contactBook, contactId))
 void saveNewContactToContactsBook(Contact newContact)
 {
 fstream contactBook;
-contactBook.open("contactBook.txt", ios::out | ios::app);
+contactBook.open("contactBook_v2.txt", ios::out | ios::app);
 
-    contactBook << newContact.id << endl
-                << newContact.name << endl
-                << newContact.surname << endl
-                << newContact.phoneNumber << endl
-                << newContact.mailAdress << endl
-                << newContact.adress << endl;
+    contactBook << newContact.id << "|"
+                << newContact.name << "|"
+                << newContact.surname << "|"
+                << newContact.phoneNumber << "|"
+                << newContact.mailAdress << "|"
+                << newContact.adress << "|" << endl;
 
     contactBook.close();
 }
@@ -155,7 +172,7 @@ char displayMainMenu()
     char userSelection;
     system("cls");
 
-    showConsoleTextInRed(".:Contacts book aplication:.");
+    showConsoleTextInRed(".:Contacts book application:.");
 
     cout << "1. Search for contact" << endl;
     cout << "2. Add new contact to your contact list" << endl;
@@ -186,7 +203,7 @@ bool searchByName(vector <Contact> allContacts)
         if ((allContacts[i].name == searchedName))
         {
             matchesFound = true;
-            cout << allContacts[i].id+1 << ". " << allContacts[i].name << " " << allContacts[i].surname << endl;
+            cout << allContacts[i].id << ". " << allContacts[i].name << " " << allContacts[i].surname << endl;
         }
     }
     if(!matchesFound)
@@ -219,7 +236,7 @@ bool searchBySurname(vector <Contact> allContacts)
         if ((allContacts[i].surname == searchedSurname))
         {
             matchesFound = true;
-            cout << allContacts[i].id+1 << ". " << allContacts[i].name << " " << allContacts[i].surname << endl;
+            cout << allContacts[i].id << ". " << allContacts[i].name << " " << allContacts[i].surname << endl;
         }
     }
     if(!matchesFound)
@@ -269,7 +286,7 @@ bool showAllContacts(vector<Contact> allContacts)
 
     for (int i = 0; i < allContacts.size(); i++)
     {
-        cout << allContacts[i].id+1 << ". " << allContacts[i].name << " " << allContacts[i].surname << endl;
+        cout << allContacts[i].id << ". " << allContacts[i].name << " " << allContacts[i].surname << endl;
     }
     cout << endl << "Press 0 to go back to main menu" << endl;
 
@@ -279,6 +296,7 @@ bool showAllContacts(vector<Contact> allContacts)
     }
 
     while (userSelection != '0');
+
 
     return true;
 }
