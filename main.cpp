@@ -135,7 +135,7 @@ void updateContactsBook(vector <Contact> &allContacts)
                     << allContacts[i].name << "|"
                     << allContacts[i].surname << "|"
                     << allContacts[i].phoneNumber << "|"
-                     << allContacts[i].mailAddress << "|"
+                    << allContacts[i].mailAddress << "|"
                     << allContacts[i].address << "|" << endl;
 
     contactBook.close();
@@ -418,17 +418,29 @@ void modifyContact (int id, vector <Contact>& allContacts)
 }
 void removeContact (int id, vector <Contact>& allContacts)
 {
-
-    for (int i = 0; i < allContacts.size(); i++)
+    char userSelection;
+    cout << endl << "Are you sure? (y/n)" << endl;
+    do
     {
-        if ((allContacts[i].id == id))
+        userSelection = getch();
+    }
+    while ((userSelection != 'y') && (userSelection != 'n'));
+
+
+    if (userSelection == 'y')
+    {
+        for (int i = 0; i < allContacts.size(); i++)
         {
-            allContacts.erase(allContacts.begin()+i);
+            if ((allContacts[i].id == id))
+            {
+                allContacts.erase(allContacts.begin()+i);
+            }
         }
+
+        updateContactsBook(allContacts);
+        cout << endl << "Contact has been removed from contacts list" << endl;
+        Sleep(1500);
     }
 
-    updateContactsBook(allContacts);
-    cout << endl << "Contact has been removed from contacts list" << endl;
-    Sleep(1500);
 }
 
