@@ -135,7 +135,7 @@ void updateContactsBook(vector <Contact> &allContacts)
                     << allContacts[i].name << "|"
                     << allContacts[i].surname << "|"
                     << allContacts[i].phoneNumber << "|"
-                    << allContacts[i].mailAddress << "|"
+                     << allContacts[i].mailAddress << "|"
                     << allContacts[i].address << "|" << endl;
 
     contactBook.close();
